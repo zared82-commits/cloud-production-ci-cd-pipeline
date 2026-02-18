@@ -1,5 +1,31 @@
 # Cloud Production CI/CD Pipeline
 
+CI (Phase 3) completed: build + push image to GHCR
+
+CD (Phase 4) deferred: terraform apply + deploy to EC2 будет позже (чтобы не тратить деньги)
+
+```mermaid
+flowchart TD
+
+Dev[Developer] --> GH[GitHub Repo]
+GH --> GA[GitHub Actions CI]
+GA --> SRC[Source Code]
+GA --> IMG[Docker Image Build]
+IMG --> TAGS[Tag latest + sha]
+TAGS --> GHCR[GitHub Container Registry]
+
+subgraph AWS_Phase_4_Deferred
+EC2[EC2 Instance]
+DOCKER[Docker Engine]
+APP[Spring Petclinic Container 8080]
+EC2 --> DOCKER --> APP
+end
+
+GHCR -. pull image .-> EC2
+APP -. monitoring .-> MON[Prometheus Grafana]
+```
+
+
 ## Overview
 
 This project demonstrates a production-oriented DevOps pipeline implementing:
