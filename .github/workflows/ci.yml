@@ -43,3 +43,30 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+
+            GHCR_IMAGE="ghcr.io/zared82-commits/cloud-production-ci-cd-pipeline:latest"
+
+            sudo docker pull "$GHCR_IMAGE"
+            sudo docker rm -f petclinic || true
+            sudo docker run -d \
+              --name petclinic \
+              --restart unless-stopped \
+              -p 8080:9966 \
+              "$GHCR_IMAGE"
+
+            sudo docker ps --filter "name=petclinic"
