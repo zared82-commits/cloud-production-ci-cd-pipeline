@@ -64,12 +64,16 @@ jobs:
 
             GHCR_IMAGE="ghcr.io/zared82-commits/cloud-production-ci-cd-pipeline:latest"
 
+            sudo apt-get update -y
+            sudo apt-get install -y curl
             sudo docker pull "$GHCR_IMAGE"
             sudo docker rm -f petclinic || true
             sudo docker run -d \
-              --name petclinic \
-              --restart unless-stopped \
-              -p 8080:9966 \
-              "$GHCR_IMAGE"
+            --health-cmd="curl -fsS http://localhost:8080/ || exit 1" \
+            --health-interval=30s --health-timeout=5s --health-retries=3 \
+            --name petclinic \
+            --restart unless-stopped \
+            -p 8080:9966 \
+            "$GHCR_IMAGE"
 
             sudo docker ps --filter "name=petclinic"
