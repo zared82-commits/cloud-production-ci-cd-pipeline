@@ -47,20 +47,19 @@ Image ready for deployment to EC2 (Phase 4)
 
 ```mermaid
 flowchart TB
-  dev[Developer] -->|git push| gh[GitHub Repo]
-  gh --> ga[GitHub Actions CI]
-  ga -->|build & test| ga2[Docker Build]
-  ga2 -->|push image| reg[GHCR / Container Registry]
+dev[Developer] -->|git push| gh[GitHub Repo]
+gh --> ga[GitHub Actions CI]
+ga -->|build & test| ga2[Docker Build]
+ga2 -->|push image| reg[GHCR / Container Registry]
 
-  subgraph AWS[Amazon Web Services (eu-central-1)]
-    vpc[VPC] --> sg[Security Group]
-    sg --> ec2[EC2 Instance]
-    ec2 -->|docker run| app[Spring Petclinic Container :8080]
-  end
+subgraph AWS["Amazon Web Services - eu-central-1"]
+vpc[VPC] --> sg[Security Group]
+sg --> ec2[EC2 Instance]
+ec2 -->|docker run| app[Spring Petclinic Container :8080]
+end
 
-  reg -->|docker pull| ec2
-  user[User/Browser] -->|http://3.66.235.5:8080| app
-
+reg -->|docker pull| ec2
+user[User/Browser] -->|http://3.66.235.5:8080| app
 ```
 
 
