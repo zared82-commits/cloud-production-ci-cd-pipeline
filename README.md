@@ -44,8 +44,8 @@ Docker multi-stage build runs →
 Container image is pushed to GitHub Container Registry (GHCR) →  
 Image ready for deployment to EC2 (Phase 4)
 
----
 
+```mermaid
 flowchart TB
   dev[Developer] -->|git push| gh[GitHub Repo]
   gh --> ga[GitHub Actions CI]
@@ -61,7 +61,8 @@ flowchart TB
   reg -->|docker pull| ec2
   user[User/Browser] -->|http://3.66.235.5:8080| app
 
----
+```
+
 
 ## Tech Stack
 
